@@ -16,14 +16,17 @@ const request = (url) => {
 };
 
 const getPhoneDetails = (idArr) => {
+  const idUrls = idArr.map(item => fetch(`${baseUrl}/phones/${item}.json`)
+    .then(response => {
+      return response.json();
+    }));
+
   const phoneDetails = [];
 
-  for (const id of idArr) {
-    request(`/phones/${id}`)
-      .then(response => {
-        phoneDetails.push(response);
-      });
-  }
+  Promise.all(idUrls)
+    .then(response => {
+      phoneDetails.push(...response);
+    });
 
   return phoneDetails;
 };
